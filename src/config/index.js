@@ -11,4 +11,8 @@ const config = {
   },
 };
 
-export default config[env];
+export default {
+  env:config[env],
+  mock:config[env].mock,
+  namespace:'my_demo'
+};
