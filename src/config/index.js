@@ -2,10 +2,12 @@ const env = import.meta.env.MODE || 'production';
 
 const config = {
   development: {
-    apiUrl: 'http://localhost:3000/api',
+    baseURL: 'http://localhost:3000/api',
+    mock:true
   },
   production: {
-    apiUrl: 'https://api.example.com',
+    baseURL: 'https://api.example.com',
+    mock:false
   },
 };
 
