@@ -1,19 +1,33 @@
 <script setup>
+import { reactive } from 'vue';
+import { ElInput, ElForm, ElFormItem, ElButton } from 'element-plus';
+import { login } from '../api/user';
+
+const user = reactive({
+  username: '',
+  userPwd: ''
+});
+
+function doLogin() {
+  login(user).then(res => {
+    console.log(res);
+  })
+}
 </script>
 
 <template>
   <div class="login-wrapper">
     <div class="modal">
-      <el-form>
+      <el-form status-icon :model="user">
         <div class="title">火星</div>
         <el-form-item>
-          <el-input type="text" prefix-icon="User"></el-input>
+          <el-input type="text" prefix-icon="User" v-model="user.username"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input type="password" prefix-icon="Lock"></el-input>
+          <el-input type="password" prefix-icon="Lock" v-model="user.userPwd"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">登录</el-button>
+          <el-button type="primary" @click="doLogin">登录</el-button>
         </el-form-item>
       </el-form>
     </div>

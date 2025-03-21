@@ -7,7 +7,7 @@ const TOKEN_INVALID = "Token校验失败，请重新登录";
 const NETWORK_ERROR = "网络请求异常，请稍后重试";
 
 const apiInstance = axios.create({
-  baseURL: config.baseURL,
+  baseURL: config.env.baseURL,
   timeout: 5000,
 });
 
