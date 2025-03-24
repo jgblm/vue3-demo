@@ -2,6 +2,10 @@
 import { reactive } from 'vue';
 import { ElInput, ElForm, ElFormItem, ElButton } from 'element-plus';
 import { login } from '../api/user';
+import store from '../store';
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const user = reactive({
   username: '',
@@ -11,6 +15,8 @@ const user = reactive({
 function doLogin() {
   login(user).then(res => {
     console.log(res);
+    store.setItem('userInfo', res);
+    router.push("/welcome")
   })
 }
 </script>
