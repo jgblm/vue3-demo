@@ -1,14 +1,5 @@
 <script setup>
-import {onMounted} from "vue";
-import storage from "./store/index.js"
 
-onMounted(() => {
-  storage.setItem("userInfo",{name:"jack",age:18})
-  storage.setItem("token","123456789")
-  console.log(storage.getStorage())
-  storage.removeItem("token")
-  console.log(storage.getStorage())
-});
 </script>
 
 <template>

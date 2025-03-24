@@ -1,8 +1,24 @@
 <script setup>
 import {ElIcon} from 'element-plus';
 import {Bell, Fold} from '@element-plus/icons-vue';
+import { ref, onMounted } from 'vue';
+import { noticeCount } from '../api/user.js';
 
 const userName = 'Donna Lewis'; // 用户名示例数据
+const hasNewNotice = ref(false);
+
+onMounted(() => {
+  fetchNoticeCount();
+});
+
+const fetchNoticeCount = async () => {
+  try {
+    const count = await noticeCount();
+    hasNewNotice.value = count > 0;
+  } catch (error) {
+    console.error('Failed to fetch notice count:', error);
+  }
+};
 </script>
 
 <template>
@@ -21,6 +37,7 @@ const userName = 'Donna Lewis'; // 用户名示例数据
         <div class="right-section">
           <el-icon :size="20">
             <Bell/>
+            <span v-if="hasNewNotice" class="red-dot"></span>
           </el-icon>
           <span>{{ userName }}</span>
         </div>
@@ -67,6 +84,16 @@ const userName = 'Donna Lewis'; // 用户名示例数据
     display: flex;
     align-items: center;
     gap: 10px;
+
+    .red-dot {
+      width: 8px;
+      height: 8px;
+      background-color: red;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
   }
 
   .user-avatar {

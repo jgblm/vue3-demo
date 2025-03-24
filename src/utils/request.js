@@ -2,6 +2,7 @@ import axios from "axios";
 import config from "../config/index.js";
 import {ElMessage} from "element-plus";
 import router from "../router/index.js";
+import storage from "../store/index.js";
 
 const TOKEN_INVALID = "Token校验失败，请重新登录";
 const NETWORK_ERROR = "网络请求异常，请稍后重试";
@@ -15,9 +16,8 @@ const apiInstance = axios.create({
 apiInstance.interceptors.request.use(
   (req) => {
       const headers = req.headers;
-      if(!headers.Authoritation){
-          headers.Authoritation = 'Bearer ' + localStorage.getItem('token');
-      }
+      const { token = "" } = storage.getItem('userInfo') || {};
+      if (!headers.Authorization) headers.Authorization = 'Bearer ' + token;
       return req;
   }
 );
