@@ -2,7 +2,7 @@ const env = import.meta.env.MODE || 'production';
 
 const config = {
   development: {
-    baseURL: 'https://m1.apifoxmock.com/m1/6074917-5765278-default',
+    baseURL: '/api',
     mock:true
   },
   production: {

@@ -25,7 +25,7 @@ apiInstance.interceptors.request.use(
 // 响应拦截器
 apiInstance.interceptors.response.use(
   (res) => {
-      const { code,data, msg } = res;
+      const { code,data, msg } = res.data;
       if (code === 200) {
           return data;
       } else if(code === 401){
