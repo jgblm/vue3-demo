@@ -4,6 +4,7 @@ import {Bell, Fold} from '@element-plus/icons-vue';
 import {onMounted, ref} from 'vue';
 import {getMenuList, noticeCount} from '../api/user.js';
 import TreeMenu from '../components/TreeMenu.vue'; // 引入 TreeMenu 组件
+import Breadcrumb from "../components/Breadcrumb.vue";
 
 const userName = 'Donna Lewis'; // 用户名示例数据
 const hasNewNotice = ref(false);
@@ -44,7 +45,7 @@ const fetchMenuList = async () => {
           <el-icon :size="20" @click="toggleMenu">
             <Fold />
           </el-icon>
-          <span>面包屑</span>
+          <Breadcrumb>面包屑</Breadcrumb>
         </div>
         <div class="right-section">
           <el-icon :size="20">
