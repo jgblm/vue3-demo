@@ -9,12 +9,15 @@
       background-color="#545c64"
       text-color="#fff"
   >
-    <el-menu-item v-for="(item,index) in menuList" :key="item._id" index="{{index}}">
-      <el-icon>
-        <icon-menu/>
-      </el-icon>
-      <span>{{ item.menuName }}</span>
-    </el-menu-item>
+    <el-sub-menu v-for="(item,index) in menuList" :key="item._id" :index="item._id.toString()">
+      <template #title>
+        <el-icon>
+          <icon-menu/>
+        </el-icon>
+        <span>{{ item.menuName }}</span>
+      </template>
+      <NodeMenu v-if="item.children && item.children.length > 0" :menuItems="item.children"/>
+    </el-sub-menu>
   </el-menu>
 </template>
 
@@ -23,6 +26,7 @@ import {
   Menu as IconMenu
 } from '@element-plus/icons-vue'
 import {onMounted, defineProps} from "vue";
+import NodeMenu from "./NodeMenu.vue";
 
 const props = defineProps(
     {
