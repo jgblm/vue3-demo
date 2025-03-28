@@ -8,7 +8,7 @@
       active-text-color="#ffd04b"
       background-color="#545c64"
       text-color="#fff"
-  >
+      router >
     <el-sub-menu v-for="(item,index) in menuList" :key="item._id" :index="item._id.toString()">
       <template #title>
         <el-icon>

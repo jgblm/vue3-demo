@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <el-menu-item v-for="(item,index) in menuItems" :key="item._id" :index="item._id.toString()">
+  <el-menu-item v-for="(item,index) in menuItems" :key="item._id" :index="item.path">
     <span>{{ item.menuName }}</span>
   </el-menu-item>
 </template>

@@ -81,7 +81,7 @@ const fetchMenuList = async () => {
 
 .nav-top {
   height: 50px; /* 固定顶部高度 */
-  background-color: #d0d0d0; /* 示例背景色 */
+  background-color: #ffffff; /* 示例背景色 */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -118,7 +118,7 @@ const fetchMenuList = async () => {
 
 .wrapper {
   flex: 1;
-  background-color: #ffffff; /* 示例背景色 */
+  background-color: #D3D3D3; /* 示例背景色 */
   padding: 20px;
   height: calc(100vh - 50px);
 }
