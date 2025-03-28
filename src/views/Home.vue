@@ -1,14 +1,17 @@
 <script setup>
 import {ElIcon} from 'element-plus';
 import {Bell, Fold} from '@element-plus/icons-vue';
-import { ref, onMounted } from 'vue';
-import { noticeCount } from '../api/user.js';
+import {onMounted, ref} from 'vue';
+import {getMenuList, noticeCount} from '../api/user.js';
+import TreeMenu from '../components/TreeMenu.vue'; // 引入 TreeMenu 组件
 
 const userName = 'Donna Lewis'; // 用户名示例数据
 const hasNewNotice = ref(false);
+const menuList = ref([]); // 定义 menuList 响应式变量
 
 onMounted(() => {
   fetchNoticeCount();
+  fetchMenuList();
 });
 
 const fetchNoticeCount = async () => {
@@ -19,12 +22,21 @@ const fetchNoticeCount = async () => {
     console.error('Failed to fetch notice count:', error);
   }
 };
+
+const fetchMenuList = async () => {
+  try {
+     // 将获取到的菜单列表赋值给 menuList
+    menuList.value = await getMenuList();
+  } catch (error) {
+    console.error('Failed to fetch menu list:', error);
+  }
+};
 </script>
 
 <template>
   <div class="basic-layout">
     <div class="nav-side">
-      <!-- 左侧内容 -->
+      <TreeMenu :menuList="menuList" /> <!-- 添加 TreeMenu 组件，并传递 menuList 数据 -->
     </div>
     <div class="content-right">
       <div class="nav-top">
