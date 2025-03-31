@@ -27,14 +27,14 @@
     </div>
 
     <!-- 用户列表 -->
-    <el-table :data="users" style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table :data="users" style="width: 100%" @selection-change="handleSelectionChange" height="500px">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="userId" label="用户ID" width="120"></el-table-column>
       <el-table-column prop="userName" label="用户名" width="120"></el-table-column>
       <el-table-column prop="userEmail" label="用户邮箱" width="200"></el-table-column>
-      <el-table-column prop="userRole" label="用户角色" width="120"></el-table-column>
-      <el-table-column prop="userStatus" label="用户状态" width="120"></el-table-column>
-      <el-table-column prop="registerTime" label="注册时间" width="200"></el-table-column>
+      <el-table-column prop="role" label="用户角色" width="120" :formatter="roleFormatter"></el-table-column>
+      <el-table-column prop="state" label="用户状态" width="120" :formatter="stateFormatter"></el-table-column>
+      <el-table-column prop="createTime" label="注册时间" width="200"></el-table-column>
       <el-table-column prop="lastLoginTime" label="最后登录时间" width="200"></el-table-column>
       <el-table-column label="操作" width="200">
         <template #default="scope">
@@ -43,11 +43,22 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+        class="pagination"
+        v-model:current-page="pager"
+        :page-size="pager.pageSize"
+        layout="total, prev, pager, next"
+        :total="pager.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+    />
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, onMounted, reactive} from 'vue';
+import {deleteUsers, getUserList} from "../api/user.js";
+import {ElMessage} from "element-plus";
 
 // 初始化数据
 const search = ref({
@@ -55,25 +66,55 @@ const search = ref({
   userName: '',
   userStatus: ''
 });
+const pager = reactive({
+  page: 1,
+  pageSize: 10,
+  total: 0
+})
 
-const users = ref([
-  {
-    userId: '1000002',
-    userName: 'admin',
-    userEmail: 'admin@imoooc.com',
-    userRole: '管理员',
-    userStatus: '在职',
-    registerTime: '2021-01-17 21:32:06',
-    lastLoginTime: '2021-01-17 21:32:06'
-  },
-  // 其他用户数据...
-]);
+const users = ref([]);
 
 const selectedUsers = ref([]);
 
+const roleFormatter = (row, column) => {
+  return {
+    0: '管理员',
+    1: '普通用户'
+  }[row.role]||'';
+}
+
+const stateFormatter = (row, column) => {
+  return {
+    0: '在职',
+    1: '离职'
+  }[row.state]||'';
+}
+
+
+
+onMounted(() => {
+  // 初始化用户列表数据
+  fetchUserList();
+})
+
+const fetchUserList = async (params) => {
+  try {
+    const {page, list} = await getUserList(params);
+    users.value = list;
+    pager.total = page.total;
+  } catch (error) {
+    console.error('Failed to fetch user list:', error);
+  }
+};
+
 // 方法定义
 const handleSearch = () => {
-  console.log('搜索条件:', search.value);
+  let params = {
+    page: pager.page,
+    pageSize: pager.pageSize,
+    ...search.value
+  };
+  fetchUserList(params);
 };
 
 const resetSearch = () => {
@@ -89,7 +130,21 @@ const handleAdd = () => {
 };
 
 const handleBatchDelete = () => {
-  console.log('批量删除用户:', selectedUsers.value);
+  if (selectedUsers.value.length === 0) {
+    ElMessage({
+      message: '请选择要删除的用户',
+      type: 'warning',
+    });
+    return;
+  }
+  deleteUsers({
+    userIds: selectedUsers.value.map(user => user.userId)
+  });
+  ElMessage({
+    message: '删除成功',
+    type: 'success',
+  });
+  fetchUserList();
 };
 
 const handleSelectionChange = (val) => {
@@ -101,7 +156,24 @@ const handleEdit = (index, row) => {
 };
 
 const handleDelete = (index, row) => {
-  console.log('删除用户:', row);
+  deleteUsers({
+    userIds: [row.userId]
+  });
+  ElMessage({
+    message: '删除成功',
+    type: 'success',
+  })
+  fetchUserList();
+};
+
+const handleSizeChange = (val) => {
+  pager.pageSize = val;
+  fetchUserList();
+};
+
+const handleCurrentChange = (val) => {
+  pager.page = val;
+  fetchUserList();
 };
 </script>
 
@@ -118,6 +190,10 @@ const handleDelete = (index, row) => {
   // 设置用户状态选择框的宽度
   .status-width {
     width: 200px; // 根据需要调整宽度
+  }
+
+  .pagination {
+    margin-top: 5px;
   }
 
   background-color: #ffffff;
