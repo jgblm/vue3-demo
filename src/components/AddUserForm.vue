@@ -22,15 +22,13 @@
       </el-select>
     </el-form-item>
     <el-form-item label="系统角色" prop="roles">
-      <el-select v-model="form.roles" multiple placeholder="请选择系统角色">
+      <el-select v-model="form.roles" multiple placeholder="请选择系统角色" style="width: 100%">
         <el-option v-for="item in roleList" :key="item._id" :label="item.roleName" :value="item._id"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="所属部门" prop="department">
-      <el-select v-model="form.department" placeholder="请选择所属部门">
-        <el-option label="技术部" value="tech"></el-option>
-        <el-option label="市场部" value="market"></el-option>
-      </el-select>
+      <el-cascader v-model="form.department" :options="deptList" :props="deptProps" placeholder="请选择所属部门" clearable
+                   show-all-levels style="width: 100%"></el-cascader>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">确定</el-button>
@@ -55,13 +53,13 @@ const form = reactive({
 });
 
 const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
-  phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
-  position: [{ required: true, message: '请输入岗位', trigger: 'blur' }],
-  status: [{ required: true, message: '请选择状态', trigger: 'change' }],
-  roles: [{ required: true, message: '请选择系统角色', trigger: 'change' }],
-  department: [{ required: true, message: '请选择所属部门', trigger: 'change' }]
+  username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+  email: [{required: true, message: '请输入邮箱', trigger: 'blur'}],
+  phone: [{required: true, message: '请输入手机号', trigger: 'blur'}],
+  position: [{required: true, message: '请输入岗位', trigger: 'blur'}],
+  status: [{required: true, message: '请选择状态', trigger: 'change'}],
+  roles: [{required: true, message: '请选择系统角色', trigger: 'change'}],
+  department: [{required: true, message: '请选择所属部门', trigger: 'change'}]
 };
 
 const emit = defineEmits(['close']);
@@ -94,6 +92,12 @@ const cancelForm = () => {
 };
 
 const deptList = ref([]);
+const deptProps = {
+  checkStrictly: true,
+  label: 'deptName',
+  value: '_id',
+  children: 'children'
+}
 const fetchDepts = async () => {
   deptList.value = await getDeptList()
 };
