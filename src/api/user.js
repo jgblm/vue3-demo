@@ -31,3 +31,9 @@ export function getRoleList(){
 export function getDeptList(){
     return apiInstance.get('/dept/list')
 }
+
+export function createOrUpdateUser(params){
+    return apiInstance.post('/users/operate', {
+        params:params
+    })
+}

@@ -40,7 +40,7 @@
 <script setup>
 import {onMounted, reactive, ref} from 'vue';
 import {ElMessage} from 'element-plus';
-import {getDeptList, getRoleList} from "../api/user.js";
+import {createOrUpdateUser, getDeptList, getRoleList} from "../api/user.js";
 
 const form = reactive({
   username: '',
@@ -77,14 +77,15 @@ const submitForm = async (formEl) => {
   if (!formEl) return;
   await formEl.validate((valid) => {
     if (valid) {
-      // 这里可以添加提交表单的逻辑，例如调用API保存数据
-      ElMessage.success('新增用户成功');
-      emit('close');
+
     } else {
       console.log('error submit!');
       return false;
     }
   });
+  await createOrUpdateUser(form);
+  ElMessage.success('新增用户成功');
+  emit('close');
 };
 
 const cancelForm = () => {
