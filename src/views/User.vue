@@ -26,6 +26,11 @@
       <el-button type="danger" @click="handleBatchDelete">批量删除</el-button>
     </div>
 
+    <!-- 新增用户对话框 -->
+    <el-dialog v-model="dialogVisible" title="新增用户" width="50%">
+      <add-user-form @close="dialogVisible = false"></add-user-form>
+    </el-dialog>
+
     <!-- 用户列表 -->
     <el-table :data="users" style="width: 100%" @selection-change="handleSelectionChange" height="500px">
       <el-table-column type="selection" width="55"></el-table-column>
@@ -59,6 +64,7 @@
 import {ref, onMounted, reactive} from 'vue';
 import {deleteUsers, getUserList} from "../api/user.js";
 import {ElMessage} from "element-plus";
+import AddUserForm from "../components/AddUserForm.vue";
 
 // 初始化数据
 const search = ref({
@@ -125,8 +131,9 @@ const resetSearch = () => {
   };
 };
 
+const dialogVisible = ref(false);
 const handleAdd = () => {
-  console.log('新增用户');
+  dialogVisible.value = true;
 };
 
 const handleBatchDelete = () => {

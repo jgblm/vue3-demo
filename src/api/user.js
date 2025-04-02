@@ -23,3 +23,11 @@ export function deleteUsers(params){
         params:params
     })
 }
+
+export function getRoleList(){
+    return apiInstance.get('/roles/allList')
+}
+
+export function getDeptList(){
+    return apiInstance.get('/dept/list')
+}

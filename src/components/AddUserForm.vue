@@ -1,0 +1,105 @@
+<!-- AddUserForm.vue -->
+<template>
+  <el-form :model="form" :rules="rules" ref="ruleFormRef" label-width="80px">
+    <el-form-item label="用户名" prop="username">
+      <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
+    </el-form-item>
+    <el-form-item label="邮箱" prop="email">
+      <el-input v-model="form.email" placeholder="请输入用户邮箱">
+        <template #append>@imooc.com</template>
+      </el-input>
+    </el-form-item>
+    <el-form-item label="手机号" prop="phone">
+      <el-input v-model="form.phone" placeholder="请输入用户手机号"></el-input>
+    </el-form-item>
+    <el-form-item label="岗位" prop="position">
+      <el-input v-model="form.position" placeholder="请输入用户岗位"></el-input>
+    </el-form-item>
+    <el-form-item label="状态" prop="status">
+      <el-select v-model="form.status" placeholder="请选择状态">
+        <el-option label="试用期" value="trial"></el-option>
+        <el-option label="正式员工" value="official"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="系统角色" prop="roles">
+      <el-select v-model="form.roles" multiple placeholder="请选择系统角色">
+        <el-option v-for="item in roleList" :key="item._id" :label="item.roleName" :value="item._id"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="所属部门" prop="department">
+      <el-select v-model="form.department" placeholder="请选择所属部门">
+        <el-option label="技术部" value="tech"></el-option>
+        <el-option label="市场部" value="market"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="submitForm(ruleFormRef)">确定</el-button>
+      <el-button @click="cancelForm">取消</el-button>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script setup>
+import {onMounted, reactive, ref} from 'vue';
+import {ElMessage} from 'element-plus';
+import {getDeptList, getRoleList} from "../api/user.js";
+
+const form = reactive({
+  username: '',
+  email: '',
+  phone: '',
+  position: '',
+  status: '',
+  roles: [],
+  department: ''
+});
+
+const rules = {
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
+  phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
+  position: [{ required: true, message: '请输入岗位', trigger: 'blur' }],
+  status: [{ required: true, message: '请选择状态', trigger: 'change' }],
+  roles: [{ required: true, message: '请选择系统角色', trigger: 'change' }],
+  department: [{ required: true, message: '请选择所属部门', trigger: 'change' }]
+};
+
+const emit = defineEmits(['close']);
+
+const ruleFormRef = ref();
+
+onMounted(
+    async () => {
+      await fetchDepts();
+      await fetchRoles();
+    }
+)
+
+const submitForm = async (formEl) => {
+  if (!formEl) return;
+  await formEl.validate((valid) => {
+    if (valid) {
+      // 这里可以添加提交表单的逻辑，例如调用API保存数据
+      ElMessage.success('新增用户成功');
+      emit('close');
+    } else {
+      console.log('error submit!');
+      return false;
+    }
+  });
+};
+
+const cancelForm = () => {
+  emit('close');
+};
+
+const deptList = ref([]);
+const fetchDepts = async () => {
+  deptList.value = await getDeptList()
+};
+
+const roleList = ref([]);
+const fetchRoles = async () => {
+  roleList.value = await getRoleList();
+};
+</script>
