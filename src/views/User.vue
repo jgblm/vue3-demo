@@ -147,7 +147,7 @@ const handleAdd = () => {
   action.value = 'add';
 };
 
-const handleBatchDelete = () => {
+const handleBatchDelete = async () => {
   if (selectedUsers.value.length === 0) {
     ElMessage({
       message: '请选择要删除的用户',
@@ -155,14 +155,21 @@ const handleBatchDelete = () => {
     });
     return;
   }
-  deleteUsers({
-    userIds: selectedUsers.value.map(user => user.userId)
-  });
-  ElMessage({
-    message: '删除成功',
-    type: 'success',
-  });
-  fetchUserList();
+  try {
+    await deleteUsers({
+      userIds: selectedUsers.value.map(user => user.userId)
+    });
+    ElMessage({
+      message: '删除成功',
+      type: 'success',
+    });
+    await fetchUserList();
+  }catch (e){
+    ElMessage({
+      message: '删除失败',
+      type: 'error',
+    });
+  }
 };
 
 const handleSelectionChange = (val) => {
