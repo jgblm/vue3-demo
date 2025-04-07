@@ -39,8 +39,8 @@
       <el-table-column prop="userEmail" label="用户邮箱" width="200"></el-table-column>
       <el-table-column prop="role" label="用户角色" width="120" :formatter="roleFormatter"></el-table-column>
       <el-table-column prop="state" label="用户状态" width="120" :formatter="stateFormatter"></el-table-column>
-      <el-table-column prop="createTime" label="注册时间" width="200"></el-table-column>
-      <el-table-column prop="lastLoginTime" label="最后登录时间" width="200"></el-table-column>
+      <el-table-column prop="createTime" label="注册时间" width="200" :formatter="dateFormatter"></el-table-column>
+      <el-table-column prop="lastLoginTime" label="最后登录时间" width="200" :formatter="dateFormatter"></el-table-column>
       <el-table-column label="操作" width="200">
         <template #default="scope">
           <el-button @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -96,7 +96,13 @@ const stateFormatter = (row, column) => {
   }[row.state]||'';
 }
 
-
+const dateFormatter = (row, column) => {
+  const date = new Date(row[column.property]);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 onMounted(() => {
   // 初始化用户列表数据
