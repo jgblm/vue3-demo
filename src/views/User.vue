@@ -28,7 +28,7 @@
 
     <!-- 新增用户对话框 -->
     <el-dialog v-model="dialogVisible" title="新增用户" width="50%">
-      <add-user-form @close="dialogVisible = false"></add-user-form>
+      <add-user-form @close="dialogVisible = false" :operateData="operateForm"></add-user-form>
     </el-dialog>
 
     <!-- 用户列表 -->
@@ -132,8 +132,11 @@ const resetSearch = () => {
 };
 
 const dialogVisible = ref(false);
+
+const operateForm = ref({});
 const handleAdd = () => {
   dialogVisible.value = true;
+  operateForm.value = {};
 };
 
 const handleBatchDelete = () => {
@@ -159,7 +162,8 @@ const handleSelectionChange = (val) => {
 };
 
 const handleEdit = (index, row) => {
-  console.log('编辑用户:', row);
+  dialogVisible.value = true;
+  operateForm.value = row;
 };
 
 const handleDelete = (index, row) => {

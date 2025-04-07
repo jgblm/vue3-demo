@@ -1,8 +1,8 @@
 <!-- AddUserForm.vue -->
 <template>
-  <el-form :model="form" :rules="rules" ref="ruleFormRef" label-width="80px">
-    <el-form-item label="用户名" prop="username">
-      <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
+  <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
+    <el-form-item label="用户名" prop="userName">
+      <el-input v-model="form.userName" placeholder="请输入用户名"></el-input>
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
       <el-input v-model="form.email" placeholder="请输入用户邮箱">
@@ -27,7 +27,8 @@
       </el-select>
     </el-form-item>
     <el-form-item label="所属部门" prop="department">
-      <el-cascader v-model="form.department" :options="deptList" :props="deptProps" placeholder="请选择所属部门" clearable
+      <el-cascader v-model="form.department" :options="deptList" :props="deptProps" placeholder="请选择所属部门"
+                   clearable
                    show-all-levels style="width: 100%"></el-cascader>
     </el-form-item>
     <el-form-item>
@@ -38,12 +39,12 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from 'vue';
+import {onMounted, reactive, ref, watchEffect} from 'vue';
 import {ElMessage} from 'element-plus';
 import {createOrUpdateUser, getDeptList, getRoleList} from "../api/user.js";
 
-const form = reactive({
-  username: '',
+let form = reactive({
+  userName: '',
   email: '',
   phone: '',
   position: '',
@@ -51,6 +52,7 @@ const form = reactive({
   roles: [],
   department: ''
 });
+const formRef = ref();
 
 const rules = {
   username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
@@ -66,12 +68,39 @@ const emit = defineEmits(['close']);
 
 const ruleFormRef = ref();
 
+const props = defineProps({
+  operateData: {
+    type: Object,
+    default: () => {
+      return {}
+    }
+  }
+})
+
 onMounted(
     async () => {
+      console.log("operateData", props.operateData)
       await fetchDepts();
       await fetchRoles();
     }
 )
+
+watchEffect(() => {
+  Object.assign(form, props.operateData)
+})
+
+const cancelForm = () => {
+  form = {
+    userName: '',
+    email: '',
+    phone: '',
+    position: '',
+    status: '',
+    roles: [],
+    department: ''
+  };
+  emit('close');
+};
 
 const submitForm = async (formEl) => {
   if (!formEl) return;
@@ -85,10 +114,6 @@ const submitForm = async (formEl) => {
   });
   await createOrUpdateUser(form);
   ElMessage.success('新增用户成功');
-  emit('close');
-};
-
-const cancelForm = () => {
   emit('close');
 };
 
