@@ -57,13 +57,30 @@ const routes = [
         meta: {
             title: '关于页'
         }
-    }
+    },
     // 添加更多路由配置
+    {
+        path: '/404',
+        name: '404',
+        component: () => import('@/views/404.vue'),
+        meta: {
+            title: '404'
+        }
+    },
 ]
 
 const router = createRouter({
     history: createWebHashHistory(),
     routes
+})
+
+router.beforeEach((to, from, next) => {
+    if(!router.hasRoute(to.name)){
+        next({
+            name: '404'
+        })
+    }
+    next()
 })
 
 export default router
